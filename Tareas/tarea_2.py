@@ -14,11 +14,15 @@ resul3 = re.match(exprCorreo3,"patds@cinvestav.subdominio.mx")
 print(resul3)
 
 expresNumeroTel = '^[0-9]{10}$'
-expresNumeroTel2 = '^([0-9]{2})[0-9]{8}$'
-
+expresNumeroTel2 = '(^\([0-9]{2}\)[0-9]{8}$)|(^\([0-9]{3}\)[0-9]{7}$)'
+expresNumeroTel3 =  '(^\([0-9]{2}\)\s[0-9]{4}\s[0-9]{4}$)|(^\([0-9]{2}\)\s[0-9]{4}-[0-9]{4}$)|' \
+                    '(^\([0-9]{3}\)\s[0-9]{3}\s[0-9]{4}$)|(^\([0-9]{3}\)\s[0-9]{3}-[0-9]{4}$)'
 
 numResul = re.match(expresNumeroTel,"4322323235")
 print(numResul)
 
-numResul2 = re.match(expresNumeroTel2,"(12)12345678")
+numResul2 = re.match(expresNumeroTel2,"(12)01234567")
 print(numResul2)
+
+numResul3 = re.match(expresNumeroTel3,"(123) 123-4567")
+print(numResul3)
