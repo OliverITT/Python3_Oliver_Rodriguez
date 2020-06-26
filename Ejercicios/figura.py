@@ -1,7 +1,7 @@
 
 class Figura():
 
-    def __int__(self, area=0, base=0, altura=0):
+    def __init__(self, area=0, base=0, altura=0):
         self._area = area
         self._base = base
         self._altura = altura
@@ -30,7 +30,7 @@ class Figura():
 
 class Triangulo(Figura):
 
-    def __int__(self, area=0, base=0, altura=0):
+    def __init__(self, area=0, base=0, altura=0):
         self._area = area
         self._base = base
         self._altura = altura
@@ -41,7 +41,7 @@ class Triangulo(Figura):
 
 class Rectangulo(Figura):
 
-    def __int__(self, area=0, base=0, altura=0):
+    def __init__(self, area=0, base=0, altura=0):
         self._area = area
         self._base = base
         self._altura = altura
