@@ -3,30 +3,21 @@ from Tareas.students import Students
 
 
 if __name__ == '__main__':
-
     db = connect('padts')
+    estudiante = Students()
+    estudiante.switch_collection('estudiante')
+    estudiante.guardarStudent(Students(name='Elizabeth', email='correo@', passw='123ps'))
+    estudiante.guardarStudent(Students(name='Alcapone', email='correo@', passw='123ps'))
+    estudiante.guardarStudent(Students(name='Diana', email='correo@', passw='123ps'))
+    estudiante.guardarStudent(Students(name='Carlos', email='correo@', passw='123ps'))
+    estudiante.guardarStudent(Students(name='Ragnar', email='correo@', passw='123ps'))
 
-    test = Students()
-    test.switch_collection('estudiantes')
-    #guardar dato
-    test.guardar('oliver', 'preuba', 'insert')
-    #consultar
-    t = test.consultarByName(name='oliver')
-    studenttem = ['oliver643','otra', 'cosa']
-    #actualizar
-    h=test.actualizar(name='oliver',student=studenttem)
-    print(h)
-    #eliminar
-    test.eliminar(name='oliver')
+    t = estudiante.consultarByName(name='Elizabeth')
     print(t)
-    #consultar todo
-    e = test.consultar()
-    print(e)
-    test.guardar(name='Mildred',email='qwe',passw='ease')
-    test.guardar(name='Mildred', email='qwe', passw='ease')
-    test.guardar(name='Mildred', email='qwe', passw='ease')
-    test.guardar(name='Mildred', email='qwe', passw='ease')
-
+    y = estudiante.actualizar(name='Alcapone', student=Students(name='Benito', email='correo@', passw='123ps'))
+    print(y)
+    g = estudiante.eliminar(name='Benito')
+    print(g[0].id)
 
 
 

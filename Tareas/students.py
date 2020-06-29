@@ -9,21 +9,26 @@ class Students(Document):
     def guardar(self, name=None, email=None, passw=None):
         return Students(name=name,email=email,passw=passw).save()
 
+    def guardarStudent(self, student=None):
+        return student.save()
+
     def consultarByName(self, name):
-        return Students.objects(name=name).first()
+        return Students.objects(name=name)
 
     def consultar(self):
-        return Students.objects().first()
+        return Students.objects()
 
     def actualizar(self, name, student):
         user = Students.objects(name=name).first()
         if not user:
             print(f'dato no encontrado: {name}')
             return -1
-        # user.update(email=record['email'])
-        user.update(name=student[0], email=student[1], passw=student[2])
-        return Students.objects(name=student[0]).first()
+        user.update(name=student.name, email=student.email, passw=student.passw)
+        return user
 
     def eliminar(self, name):
         t = Students.objects(name=name).delete()
-        return t
+        return Students.objects()
+
+    def __str__(self):
+        return f'{self.name,self.email,self.passw}'
