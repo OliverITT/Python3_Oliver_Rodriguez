@@ -49,6 +49,7 @@ class MainWindow(QMainWindow):
         self.lisLayout= QVBoxLayout()
         self.mainLayout.addWidget(self.list)
         self.mainLayout.addLayout(self.lisLayout)
+        self.list.itemClicked.connect(self.selectItem)
 
 
 
@@ -71,30 +72,47 @@ class MainWindow(QMainWindow):
         self.eliminarButton.clicked.connect(self.delete)
         self.actualizarButton.clicked.connect(self.update)
 
+    def clearInput(self):
+        self.inputName.clear()
+        self.inputEmail.clear()
+        self.inputPassw.clear()
+
+    def setDataUI(self):
+        t = self.obj.consultarByName(self.temp)
+        self.inputName.setText(t.name)
+        self.inputEmail.setText(t.email)
+        self.inputPassw.setText(t.passw)
 
     @Slot()
-    def selectItem(self,item):
+    def selectItem(self):
+        item = self.list.currentItem()
         self.temp=item.text()
+        self.setDataUI()
 
 
     @Slot()
     def create(self):
         self.obj.guardarStudent(Students(name=self.inputName.text(),email=self.inputEmail.text(),passw=self.inputPassw.text()))
         self.read()
+        self.clearInput()
 
     @Slot()
     def read(self):
+        self.clearInput()
         self.list.clear()
         for i in self.obj.consultar():
             self.list.addItem(i.name)
 
     @Slot()
     def update(self):
-        pass
+        self.obj.actualizar(name=self.temp,student=Students(name=self.inputName.text(), email=self.inputEmail.text(), passw=self.inputPassw.text()))
+        self.clearInput()
+        self.read()
 
     @Slot()
     def delete(self):
-        self.obj.eliminar(name=self.inputName.text())
+        self.clearInput()
+        self.obj.eliminar(name=self.temp)
         self.read()
 
 def main():

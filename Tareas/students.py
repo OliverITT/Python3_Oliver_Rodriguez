@@ -13,7 +13,7 @@ class Students(Document):
         return student.save()
 
     def consultarByName(self, name):
-        return Students.objects(name=name)
+        return Students.objects(name=name).first()
 
     def consultar(self):
         return Students.objects()
