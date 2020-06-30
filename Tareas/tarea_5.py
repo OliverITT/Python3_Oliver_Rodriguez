@@ -44,11 +44,11 @@ class MainWindow(QMainWindow):
         self.mainLayout.addLayout(self.inputLayout)
     def view(self):
         self.list = QListWidget()
+        self.list.setAlternatingRowColors(True)
         self.list.setMaximumWidth(400)
         self.lisLayout= QVBoxLayout()
         self.mainLayout.addWidget(self.list)
         self.mainLayout.addLayout(self.lisLayout)
-        self.list.itemClicked(self.selectItem)
 
 
 
@@ -68,6 +68,8 @@ class MainWindow(QMainWindow):
 
         self.guardarButton.clicked.connect(self.create)
         self.consultarButton.clicked.connect(self.read)
+        self.eliminarButton.clicked.connect(self.delete)
+        self.actualizarButton.clicked.connect(self.update)
 
 
     @Slot()
@@ -85,20 +87,15 @@ class MainWindow(QMainWindow):
         self.list.clear()
         for i in self.obj.consultar():
             self.list.addItem(i.name)
-    @Slot()
-    def read(self,name=None):
-        self.list.clear()
-        i=self.obj.consultarByName(name=name)
-        self.list.addItem(i.name)
 
     @Slot()
     def update(self):
-
         pass
 
     @Slot()
     def delete(self):
-        pass
+        self.obj.eliminar(name=self.inputName.text())
+        self.read()
 
 def main():
     print('run')
@@ -106,10 +103,6 @@ def main():
     forma = MainWindow()
     forma.show()
     sys.exit(app.exec_())
-
-    @Slot()
-    def guardar(self):
-        print(f'{self.inputName.text()}')
 
 if __name__ == '__main__':
     main()
