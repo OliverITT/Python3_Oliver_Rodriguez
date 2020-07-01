@@ -1,6 +1,6 @@
 import sys
-from PySide2.QtWidgets import QHBoxLayout,QGroupBox,QBoxLayout,QLabel,QFormLayout,QAction,QWidget,QApplication,QMainWindow,QDialog,QLineEdit,QPushButton, QVBoxLayout,QListWidget,QPlainTextEdit
-from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QFileDialog,QHBoxLayout,QGroupBox,QBoxLayout,QLabel,QFormLayout,QAction,QWidget,QApplication,QMainWindow,QDialog,QLineEdit,QPushButton, QVBoxLayout,QListWidget,QPlainTextEdit
+from PySide2.QtCore import Slot,QDir
 import  socket
 class MainWindow(QMainWindow):
 
@@ -9,7 +9,7 @@ class MainWindow(QMainWindow):
         self.initMainWindow()
         self.inputComponentServer()
         self.inputComponentStudet()
-
+        self.fileComponentInput()
         self.statusComponentServer()
 
 
@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
 
         self.buttonConectServer = QPushButton('Conectar')
         inpintMainboxlayout.addWidget(self.buttonConectServer)
-        self.buttonConectServer.clicked.connect(self.sayHello)
+        self.buttonConectServer.clicked.connect(self.conectServer)
 
     def inputComponentStudet(self):
         boxInputStudet = QGroupBox('Estudiante')
@@ -58,14 +58,14 @@ class MainWindow(QMainWindow):
         nameLayout = QHBoxLayout()
         nameLayout.addWidget(QLabel('Nombre: '))
         self.inputNameStudet = QLineEdit()
-        self.inputNameStudet.setPlaceholderText('Mildred')
+        self.inputNameStudet.setPlaceholderText('Nombre')
         nameLayout.addWidget(self.inputNameStudet)
         inpintMainboxStudetlayout.addLayout(nameLayout)
 
         emailLayout = QHBoxLayout()
         emailLayout.addWidget(QLabel('Email@: '))
         self.inputEmailStudet = QLineEdit()
-        self.inputEmailStudet.setPlaceholderText('Mildred@cinvestav.mx')
+        self.inputEmailStudet.setPlaceholderText('Email@cinvestav.mx')
         emailLayout.addWidget(self.inputEmailStudet)
         inpintMainboxStudetlayout.addLayout(emailLayout)
 
@@ -77,9 +77,27 @@ class MainWindow(QMainWindow):
         inpintMainboxStudetlayout.addLayout(passwLayout)
 
         self.buttonSendStudent = QPushButton('Enviar')
-        self.buttonSendStudent.clicked.connect(self.sayHello)
+        self.buttonSendStudent.clicked.connect(self.sendStudent)
         inpintMainboxStudetlayout.addWidget(self.buttonSendStudent)
+
     def fileComponentInput(self):
+        boxInputFile = QGroupBox('File')
+        inpintMainboxFilelayout = QVBoxLayout()
+        boxInputFile.setLayout(inpintMainboxFilelayout)
+        self.mainLayout.addWidget(boxInputFile)
+
+        fileFindLayout = QHBoxLayout()
+        buttonFindFile = QPushButton('Buscar')
+        buttonFindFile.clicked.connect(self.findFile)
+        fileFindLayout.addWidget(buttonFindFile)
+        self.inputFileSend = QLineEdit()
+        self.inputFileSend.setPlaceholderText('Ruta de archivo')
+        fileFindLayout.addWidget(self.inputFileSend)
+        inpintMainboxFilelayout.addLayout(fileFindLayout)
+        buttonSendFile = QPushButton('Enviar')
+        buttonSendFile.clicked.connect(self.sendFileToServer)
+        inpintMainboxFilelayout.addWidget(buttonSendFile)
+
 
     def statusComponentServer(self):
         boxStatus = QGroupBox('Status Server')
@@ -98,41 +116,31 @@ class MainWindow(QMainWindow):
 
 
 
-    @Slot()
-    def sayHello(self):
-        print('hello')
-
-    def clearInput(self):
-        #self.inputName.clear()
-        pass
-
-
-    def setDataUI(self):
-        #self.inputPassw.setText(t.passw)
-        pass
 
     @Slot()
-    def selectItem(self):
-        item = self.list.currentItem()
-        self.temp=item.text()
-        self.setDataUI()
+    def sendFileToServer(self):
+        print('Send File')
 
 
     @Slot()
-    def create(self):
-        self.clearInput()
+    def conectServer(self):
+        print('Conect Server')
 
     @Slot()
-    def read(self):
-            self.list.addItem('slot read')
+    def findFile(self):
+        self.path = QFileDialog.getOpenFileName(self, "Cargar", QDir.currentPath(), "*.*");
+        self.inputFileSend.setText(self.path[0])
+        file = open(self.path[0],"rb")
+        self.bytes = file.read()
+        file.close()
+        file = open("tester/prueba.zip","wb")
+        file.write(self.bytes)
+        file.close()
+
 
     @Slot()
-    def update(self):
-        pass
-
-    @Slot()
-    def delete(self):
-        pass
+    def sendStudent(self):
+        print('Send Studen')
 
 def main():
     print('run')
