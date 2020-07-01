@@ -1,7 +1,8 @@
 import sys
-from PySide2.QtWidgets import QFileDialog,QHBoxLayout,QGroupBox,QBoxLayout,QLabel,QFormLayout,QAction,QWidget,QApplication,QMainWindow,QDialog,QLineEdit,QPushButton, QVBoxLayout,QListWidget,QPlainTextEdit
+from PySide2.QtWidgets import QFileDialog,QHBoxLayout,QGroupBox,QLabel,QAction,QWidget,QApplication,QMainWindow,QLineEdit,QPushButton, QVBoxLayout
 from PySide2.QtCore import Slot,QDir
-import  socket
+import  socket as s
+from Proyecto.estudiante import Estudiante
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
@@ -47,7 +48,7 @@ class MainWindow(QMainWindow):
 
         self.buttonConectServer = QPushButton('Conectar')
         inpintMainboxlayout.addWidget(self.buttonConectServer)
-        self.buttonConectServer.clicked.connect(self.conectServer)
+        self.buttonConectServer.clicked.connect(self.conectOrDisconect)
 
     def inputComponentStudet(self):
         boxInputStudet = QGroupBox('Estudiante')
@@ -109,7 +110,7 @@ class MainWindow(QMainWindow):
         statusLabelLayout.addWidget(QLabel('Connection Status: '))
         self.statusConectLabel = QLabel('Developer connect')
         statusLabelLayout.addWidget(self.statusConectLabel)
-        statusLabelLayout.addWidget(QLabel('Data Transfer Status'))
+        statusLabelLayout.addWidget(QLabel('Data Transfer Status:'))
         self.statsDataTransfer = QLabel('Developer data')
         statusLabelLayout.addWidget(self.statsDataTransfer)
         inpintMainboxStatuslayout.addLayout(statusLabelLayout)
@@ -120,11 +121,34 @@ class MainWindow(QMainWindow):
     @Slot()
     def sendFileToServer(self):
         print('Send File')
+    @Slot()
+    def conectOrDisconect(self):
+        if self.buttonConectServer.text() == 'Conectar':
+            self.conectServer()
+        else:
+            self.disconectServer()
+    @Slot()
+    def disconectServer(self):
+        self.buttonConectServer.setText('Conectar')
+        self.statusConectLabel.setText('Desconect')
+        self.clienteTCP.close()
 
 
     @Slot()
     def conectServer(self):
-        print('Conect Server')
+        self.ip = self.inputIP.text()
+        self.port  = int(self.inputPort.text())
+        self.clienteTCP = s.socket()
+        self.clienteTCP.connect((self.ip,self.port))
+        self.statusConectLabel.setText('Connect')
+        self.buttonConectServer.setText('Desconectar')
+
+
+    @Slot()
+    def sendStudent(self):
+        student = Estudiante(self.inputNameStudet.text(),self.inputEmailStudet.text(),self.inputPasswStudet.text())
+        dataByte = student.encode()
+        self.clienteTCP.send(dataByte)
 
     @Slot()
     def findFile(self):
@@ -138,9 +162,7 @@ class MainWindow(QMainWindow):
         file.close()
 
 
-    @Slot()
-    def sendStudent(self):
-        print('Send Studen')
+
 
 def main():
     print('run')
