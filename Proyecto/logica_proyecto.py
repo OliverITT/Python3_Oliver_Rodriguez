@@ -3,6 +3,9 @@ from PySide2.QtWidgets import QFileDialog,QHBoxLayout,QGroupBox,QLabel,QAction,Q
 from PySide2.QtCore import Slot,QDir
 import  socket as s
 from Proyecto.estudiante import Estudiante
+import pickle
+import time
+from threading import  Thread
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
@@ -12,6 +15,9 @@ class MainWindow(QMainWindow):
         self.inputComponentStudet()
         self.fileComponentInput()
         self.statusComponentServer()
+        self.clienteTCP = s.socket()
+        self.t = Thread(target=self.servicesDataTranfer)
+
 
 
     def initMainWindow(self):
@@ -115,12 +121,29 @@ class MainWindow(QMainWindow):
         statusLabelLayout.addWidget(self.statsDataTransfer)
         inpintMainboxStatuslayout.addLayout(statusLabelLayout)
 
-
+    def servicesDataTranfer(self):
+        while True:
+            self.data = self.clienteTCP.recv(1024)
+            print(self.data.decode())
 
 
     @Slot()
     def sendFileToServer(self):
-        print('Send File')
+        inicio='iniciozip'.encode()
+        fin ='finzip'.encode()
+        self.clienteTCP.send(inicio)
+        self.file = open(self.path[0], "rb")
+        self.bytes = self.file.read(500)
+        while len(self.bytes)>0 and self.bytes!=-1:
+            self.clienteTCP.send(self.bytes)
+            self.bytes = self.file.read(500)
+            print(f'tmaño:{len(self.bytes)}->{self.bytes}\n')
+
+        self.file.close()
+        self.clienteTCP.send(fin)
+        #file = open("tester/prueba.zip", "wb")
+        #file.write(self.bytes)
+        #file.close()
     @Slot()
     def conectOrDisconect(self):
         if self.buttonConectServer.text() == 'Conectar':
@@ -138,28 +161,23 @@ class MainWindow(QMainWindow):
     def conectServer(self):
         self.ip = self.inputIP.text()
         self.port  = int(self.inputPort.text())
-        self.clienteTCP = s.socket()
         self.clienteTCP.connect((self.ip,self.port))
         self.statusConectLabel.setText('Connect')
         self.buttonConectServer.setText('Desconectar')
+        #self.t.start()
 
 
     @Slot()
     def sendStudent(self):
         student = Estudiante(self.inputNameStudet.text(),self.inputEmailStudet.text(),self.inputPasswStudet.text())
-        dataByte = student.encode()
+        dataByte = pickle.dumps(student)
         self.clienteTCP.send(dataByte)
 
     @Slot()
     def findFile(self):
         self.path = QFileDialog.getOpenFileName(self, "Cargar", QDir.currentPath(), "*.*");
         self.inputFileSend.setText(self.path[0])
-        file = open(self.path[0],"rb")
-        self.bytes = file.read()
-        file.close()
-        file = open("tester/prueba.zip","wb")
-        file.write(self.bytes)
-        file.close()
+
 
 
 
