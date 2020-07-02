@@ -6,6 +6,7 @@ from Proyecto.estudiante import Estudiante
 import pickle
 import time
 from threading import  Thread
+
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
@@ -129,12 +130,14 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def sendFileToServer(self):
+        #self.clienteTCP.send('texto'.encode())
+        #self.clienteTCP.send('texto2'.encode())
         inicio='iniciozip'.encode()
         fin ='finzip'.encode()
         self.clienteTCP.send(inicio)
         self.file = open(self.path[0], "rb")
         self.bytes = self.file.read(500)
-        while len(self.bytes)>0 and self.bytes!=-1:
+        while self.bytes:
             self.clienteTCP.send(self.bytes)
             self.bytes = self.file.read(500)
             print(f'tmaño:{len(self.bytes)}->{self.bytes}\n')
@@ -164,7 +167,7 @@ class MainWindow(QMainWindow):
         self.clienteTCP.connect((self.ip,self.port))
         self.statusConectLabel.setText('Connect')
         self.buttonConectServer.setText('Desconectar')
-        #self.t.start()
+        self.t.start()
 
 
     @Slot()
